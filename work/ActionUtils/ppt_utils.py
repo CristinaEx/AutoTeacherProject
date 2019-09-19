@@ -2,7 +2,7 @@ import os
 
 def openPPT(PPT_path):
     """
-    打开PPT
+    使用cmd打开PPT
     PPT_path:ppt所在位置+文件名
     """
     os.system('start ' + PPT_path)
