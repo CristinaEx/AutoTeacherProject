@@ -1,5 +1,6 @@
 from WorkFlowUtils.workflow_reader import WorkFlowReader
-from ActionUtils.ppt_utils import *
+import ActionUtils.ppt_utils as ppt_utils
+import ActionUtils.PPT_mouse as ppt_mouse
 import time
 
 class Controler:
@@ -11,12 +12,22 @@ class Controler:
         XML_pos:xml文件位置
         """
         self.work_stack = WorkFlowReader.read(XML_pos)
-        openPPT(PPT_pos)
+        self.PPT_pos = PPT_pos
+        self.index = 0# 记录当前PPT页码
+
+    def reinit(self,PPT_pos,XML_pos):
+        """
+        重新初始化
+        """
+        self.__init__(PPT_pos,XML_pos)
 
     def run(self):
         """
         执行流程
         """
+        ppt_utils.openPPT(self.PPT_pos)
+        self.__delay(3) # 初始等待时间
+        ppt_mouse.play()
         while not len(self.work_stack) == 0:
             self.__runOne()
 
@@ -27,6 +38,21 @@ class Controler:
         """
         time.sleep(t)
 
+    def __goToPage(self,index):
+        """
+        index:页码,int
+        跳转至index页
+        注:第0页为PPT首页
+        """
+        print('go to page ' + str(index))
+
+    def __playVoice(self,word):
+        """
+        word:str
+        播放str的语音
+        """
+        print(word)
+
     def __runOne(self):
         """
         执行当前流程
@@ -35,18 +61,18 @@ class Controler:
         if workflow['type'] == '1':
             # 讲解类型
             # 首先进入当前PPT位置
-            print('go to page ' + workflow['index_PPT'])
+            self.__goToPage(int(workflow['index_PPT']))
             # 播放语言
-            print(workflow['word'])
+            self.__playVoice(workflow['word'])
             # 等待
             self.__delay(float(workflow['delay']))
             pass
         elif workflow['type'] == '2':
             # 讲解类型
             # 首先进入当前PPT位置
-            print('go to page ' + workflow['index_PPT'])
+            self.__goToPage(int(workflow['index_PPT']))
             # 叙述问题
-            print(workflow['word'])
+            self.__playVoice(workflow['word'])
             # 等待
             self.__delay(float(workflow['delay']))
             # 接收回答
