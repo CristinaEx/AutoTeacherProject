@@ -12,7 +12,7 @@ class DirList(object):
 
         # 第一个标签：self.label，就是Directory Lister v1.1
         self.top = Tk()
-        self.label = Label(self.top, text='Directory Lister v1.1')
+        self.label = Label(self.top, text='Dictionary')
         self.label.pack()
 
         # 第二个标签：self.dirl，就是当前文件目录路径

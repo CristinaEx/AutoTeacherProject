@@ -46,3 +46,9 @@
 - - 运行main后选择choose找到test_data里的ppt文件
 - - 选择后在分界面确认，跳转回主界面
 - - 在主界面点击Open即可开始运行
+
+### 2019/10/15 CristinaEx
+
+- GensimUtils
+
+- 同义词检索工具
