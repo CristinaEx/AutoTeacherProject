@@ -58,3 +58,21 @@
 - remove GensimUtils
 
 - 现在使用同义词检索工具SimilarWordUtils
+
+- - 使用方法:
+```
+from SimilarWordUtils.similar_word_utils import SimilarWordUtils
+
+similar_tools = SimilarWordUtils()
+print(similar_tools.getSimilarWord("我"))
+print(similar_tools.getSimilarWord("你"))
+print(similar_tools.getSimilarWord("他"))
+print(similar_tools.getSimilarWord("自行车"))
+```
+output:
+```
+['自己', '自家', '自个儿', '自各儿', '自身', '本身', '自我', '本人', '小我', '我', '自', '己']
+['你', '您', '恁', '而', '尔', '汝', '若', '乃', '卿', '君', '公']
+['异', '他', '外', '客']
+['自行车', '脚踏车', '单车', '车子']
+```
