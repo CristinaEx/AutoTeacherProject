@@ -52,3 +52,9 @@
 - GensimUtils
 
 - 同义词检索工具
+
+### 2019/10/18 CristinaEx
+
+- remove GensimUtils
+
+- 现在使用同义词检索工具SimilarWordUtils
