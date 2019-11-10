@@ -24,32 +24,34 @@ class WorkFlowMaker:
         workflow = ET.SubElement(self.workflow, 'workflow' + str(index)) 
         ind = ET.SubElement(workflow, 'index') 
         ind.text = str(index)
+        visual_ = ET.SubElement(workflow, 'visual') 
+        visual_.text = items[0]
         type_ = ET.SubElement(workflow, 'type') 
-        type_.text = items[0]
+        type_.text = items[1]
         word = ET.SubElement(workflow, 'word') 
-        word.text = items[1]
+        word.text = items[2]
         delay = ET.SubElement(workflow, 'delay') 
         # delay默认为0
-        if items[2] == '':
-            items[2] = '0'
-        delay.text = items[2]
+        if items[3] == '':
+            items[3] = '0'
+        delay.text = items[3]
         index_PPT = ET.SubElement(workflow, 'index_PPT') 
-        index_PPT.text = items[3]
+        index_PPT.text = items[4]
         # 讲解流程判定
-        if items[0] == '1':
+        if items[1] == '1':
             pass
         # 问答流程判定
-        elif items[0] == '2':
+        elif items[1] == '2':
             result = ET.SubElement(workflow, 'result')
             # 问题答案记录
             for i in range(int((len(items)-4)/3)):
                 word = ET.SubElement(result, 'word'+str(i))
                 txt = ET.SubElement(word, 'txt')
-                txt.text = items[4+i*3]
+                txt.text = items[5+i*3]
                 exact = ET.SubElement(word, 'exact')
-                exact.text = items[5+i*3]
+                exact.text = items[6+i*3]
                 workflow_index = ET.SubElement(word, 'workflow_index')
-                workflow_index.text = items[6+i*3]
+                workflow_index.text = items[7+i*3]
         self.workflow_num += 1
 
 def test(file_name,out_put_name):

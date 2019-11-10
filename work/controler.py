@@ -1,6 +1,7 @@
 from WorkFlowUtils.workflow_reader import WorkFlowReader
 import ActionUtils.ppt_utils as ppt_utils
 import ActionUtils.PPT_mouse as ppt_mouse
+import ActionUtils.ppt_keyboard as ppt_keyboard
 import time
 
 class Controler:
@@ -13,7 +14,9 @@ class Controler:
         """
         self.work_stack = WorkFlowReader.read(XML_pos)
         self.PPT_pos = PPT_pos
-        self.index = 0# 记录当前PPT页码
+        self.index = 1# 记录当前PPT页码
+        self.extra_workflows = []
+        self.keyboard = ppt_keyboard.PPTKeyboard()
 
     def reinit(self,PPT_pos,XML_pos):
         """
@@ -27,7 +30,8 @@ class Controler:
         """
         ppt_utils.openPPT(self.PPT_pos)
         self.__delay(3) # 初始等待时间
-        ppt_mouse.play()
+        self.keyboard.playPPT()
+        self.keyboard.nextPPT(3)
         while not len(self.work_stack) == 0:
             self.__runOne()
 
@@ -44,7 +48,11 @@ class Controler:
         跳转至index页
         注:第0页为PPT首页
         """
-        print('go to page ' + str(index))
+        if self.index > index:
+            self.keyboard.prePPT(self.index - index)
+        else:
+            self.keyboard.nextPPT(index - self.index)
+        self.index = index
 
     def __playVoice(self,word):
         """
@@ -58,6 +66,9 @@ class Controler:
         执行当前流程
         """
         workflow = self.work_stack.pop()
+        # 非显示流程
+        if workflow['visual'] == 0 and not workflow['index'] in self.extra_workflows:
+            return
         if workflow['type'] == '1':
             # 讲解类型
             # 首先进入当前PPT位置

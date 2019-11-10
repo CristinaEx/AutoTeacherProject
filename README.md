@@ -17,6 +17,7 @@ XML输入格式如下：
     <workflow>
         <workflow1>
             <index>顺序<index/>
+            <visual>1(是否可视1 or 0)<visual/>
             <type>1(讲解类型)<type/>
             <word>该说的语音<word/>
             <delay>等待的时间<delay/>
@@ -24,6 +25,7 @@ XML输入格式如下：
         <workflow1/>
         <workflow2>
             <index>顺序<index/>
+            <visual>1(是否可视1 or 0)<visual/>
             <type>2(问答类型)<type/>
             <word>该说的语音<word/>
             <delay>等待的时间<delay/>
