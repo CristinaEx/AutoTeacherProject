@@ -14,4 +14,5 @@ class MyDirList(DirList):
             pass
         else:
             self.parent.PPT_pos = self.path + '\\' + tdir
+            self.parent.text.set('Already Open ' + self.parent.PPT_pos)
             self.top.destroy()
