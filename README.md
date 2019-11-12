@@ -15,7 +15,7 @@ XML输入格式如下：
 ```
 <root>
     <workflow>
-        <workflow1>
+        <workflow0>
             <index>顺序<index/>
             <visual>1(是否可视1 or 0)<visual/>
             <type>1(讲解类型)<type/>
@@ -23,8 +23,8 @@ XML输入格式如下：
             <delay>等待的时间<delay/>
             <click>动画效果点击次数(num),点击操作在语音输出之前进行<click/>
             <index_PPT>PPT的页码<index_PPT/>
-        <workflow1/>
-        <workflow2>
+        <workflow0/>
+        <workflow1>
             <index>顺序<index/>
             <visual>1(是否可视1 or 0)<visual/>
             <type>2(问答类型)<type/>
@@ -40,7 +40,7 @@ XML输入格式如下：
                 <word1/>
             ......
             <result/>
-        <workflow2/>
+        <workflow1/>
         ......
     <workflow/>
 <root/>
@@ -55,3 +55,22 @@ XML输入格式如下：
 - xml -> [dict...]
 
 ## 主流程控制模块
+
+主流程运行顺序:
+
+- 1.从流程栈里读取一个流程
+- 2.识别当前流程是否为可视的(visual)，若不可视，则查看是否有查看许可，若没有许可，则跳过该流程
+- 3.识别当前流程类型
+- 4.执行动画效果触发
+- 5.执行语音输出
+- 6.执行讲解或者问题流程特定的内容
+
+如果是问题流程:
+- 如果出现问题回答错误，则将该问题所属流程序号插入流程栈栈顶
+- 重复以上流程，直到流程栈为空
+
+## 语音识别模块
+
+## 动作执行模块
+
+## 教案制作模块
