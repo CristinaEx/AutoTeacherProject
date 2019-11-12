@@ -21,6 +21,7 @@ XML输入格式如下：
             <type>1(讲解类型)<type/>
             <word>该说的语音<word/>
             <delay>等待的时间<delay/>
+            <click>动画效果点击次数(num),点击操作在语音输出之前进行<click/>
             <index_PPT>PPT的页码<index_PPT/>
         <workflow1/>
         <workflow2>
@@ -29,12 +30,13 @@ XML输入格式如下：
             <type>2(问答类型)<type/>
             <word>该说的语音<word/>
             <delay>等待的时间<delay/>
+            <click>动画效果点击次数(num),点击操作在语音输出之前进行<click/>
             <index_PPT>PPT的页码<index_PPT/>
             <result>
                 <word1>
                     <txt>问题的答案（文本）<txt/>
                     <exact>1/0(是否为精确解)<exact/>
-                    <workflow_index>问题出现的流程名为第几个<workflow_index/>
+                    <workflow_index>问题出现的流程index<workflow_index/>
                 <word1/>
             ......
             <result/>

@@ -35,8 +35,13 @@ class WorkFlowMaker:
         if items[3] == '':
             items[3] = '0'
         delay.text = items[3]
+        click = ET.SubElement(workflow, 'click') 
+        # click默认为0
+        if items[4] == '':
+            items[4] = '0'
+        click.text = items[4]
         index_PPT = ET.SubElement(workflow, 'index_PPT') 
-        index_PPT.text = items[4]
+        index_PPT.text = items[5]
         # 讲解流程判定
         if items[1] == '1':
             pass
@@ -47,11 +52,11 @@ class WorkFlowMaker:
             for i in range(int((len(items)-4)/3)):
                 word = ET.SubElement(result, 'word'+str(i))
                 txt = ET.SubElement(word, 'txt')
-                txt.text = items[5+i*3]
+                txt.text = items[6+i*3]
                 exact = ET.SubElement(word, 'exact')
-                exact.text = items[6+i*3]
+                exact.text = items[7+i*3]
                 workflow_index = ET.SubElement(word, 'workflow_index')
-                workflow_index.text = items[7+i*3]
+                workflow_index.text = items[8+i*3]
         self.workflow_num += 1
 
 def test(file_name,out_put_name):
