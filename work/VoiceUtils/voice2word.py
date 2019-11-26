@@ -165,16 +165,12 @@ def on_open(ws):
 
     thread.start_new_thread(run, ())
 
-
-if __name__ == "__main__":
-    # 测试时候在此处正确填写相关信息即可运行
+# 语音听写的函数
+def Voice2Word(self, file_path):
     time1 = datetime.now()
-    # APPID、APIKey、APISecret在科大讯飞注册并创建应用后可获得
-    # 创建应用后，要将自己的IP加入白名单
-    # AudioFile为识别音频文件
     wsParam = Ws_Param(APPID='5d9c1c87', APIKey='662d6f81088cc7d148aed3f3a880fc3b',
                        APISecret='892e54ce7913715b6d541d6eb0b7d80e',
-                       AudioFile=r'')
+                       AudioFile=r'file_path')
     websocket.enableTrace(False)
     wsUrl = wsParam.create_url()
     ws = websocket.WebSocketApp(wsUrl, on_message=on_message, on_error=on_error, on_close=on_close)
@@ -182,3 +178,5 @@ if __name__ == "__main__":
     ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
     time2 = datetime.now()
     print(time2-time1)
+
+# Voice2Word(file_path)
