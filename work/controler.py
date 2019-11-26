@@ -2,7 +2,10 @@ from WorkFlowUtils.workflow_reader import WorkFlowReader
 from SimilarWordUtils.similar_word_utils import SimilarWordUtils
 import ActionUtils.ppt_utils as ppt_utils
 import ActionUtils.ppt_keyboard as ppt_keyboard
+import ActionUtils.ppt_control as ppt_control
 import time
+
+DEBUG = False
 
 class Controler:
 # 主流程控制程序
@@ -20,6 +23,7 @@ class Controler:
         self.index = 1# 记录当前PPT页码
         self.extra_workflows = []# 接入许可
         self.keyboard = ppt_keyboard.PPTKeyboard()# 键盘操作
+        self.mouse = ppt_control.PPTMouse()# 鼠标操作
         self.similar_utils = SimilarWordUtils()
 
     def reinit(self,PPT_pos,XML_pos):
@@ -63,22 +67,27 @@ class Controler:
         word:str
         播放str的语音
         """
-        print(word)
+        if DEBUG:
+            print(word)
 
     def __clickAnime(self,times):
         """
         times点击次数
         动画效果点击
         """
-        print('click ' + str(times) + ' times !')
+        if DEBUG:
+            for time in range(times):
+                self.mouse.playMovie()
+            print('click ' + str(times) + ' times !')
 
     def __receiveWord(self,seconds):
         """
         seconds:接收语音允许的时间
         接收语音
         """
-        self.__delay(seconds)
-        return '答案1'
+        if DEBUG:
+            self.__delay(seconds)
+            return '答案1'
 
     def __runOne(self):
         """
@@ -103,7 +112,7 @@ class Controler:
             # 等待
             self.__delay(float(workflow['delay']))
         elif workflow['type'] == '2':
-            # 讲解类型
+            # 问答类型
             # 首先进入当前PPT位置
             self.__goToPage(int(workflow['index_PPT']))
             # 动画效果点击
@@ -111,6 +120,7 @@ class Controler:
             # 叙述问题
             self.__playVoice(workflow['word'])
             # 等待
+            # 问答类型的delay项和问题等待合并
             # self.__delay(float(workflow['delay']))
             # 接收回答
             word = self.__receiveWord(float(workflow['delay']))
@@ -122,7 +132,8 @@ class Controler:
                     # 问题回答错误
                     if not result['txt'] in word:
                         # 存在问题回答错误后的反馈
-                        print('Wrong Answer:' + word + ' ---> ' + result['txt'])
+                        if DEBUG:
+                            print('Wrong Answer:' + word + ' ---> ' + result['txt'])
                         if not result['workflow_index'] == '':
                             add_workflow = self.stack_book[result['workflow_index']]
                             # 授予介入许可
@@ -131,7 +142,8 @@ class Controler:
                             self.work_stack.append(add_workflow)
                     else:
                         # 问题回答正确
-                        print('Correct Answer:' + word)
+                        if DEBUG:
+                            print('Correct Answer:' + word)
                 else:
                     # 非精确解
                     # 获取近义词
@@ -144,7 +156,8 @@ class Controler:
                     # 如果错误
                     if not correct:
                         # 存在问题回答错误后的反馈
-                        print('Wrong Answer:' + word + ' ---> ' + str(txts))
+                        if DEBUG:
+                            print('Wrong Answer:' + word + ' ---> ' + str(txts))
                         if not result['workflow_index'] == '':
                             add_workflow = self.stack_book[result['workflow_index']]
                             # 授予介入许可
@@ -153,8 +166,11 @@ class Controler:
                             self.work_stack.append(add_workflow)     
                     else:
                         # 问题回答正确
-                        print('Correct Answer:' + word + ' in ' + str(txts))      
+                        if DEBUG:
+                            print('Correct Answer:' + word + ' in ' + str(txts))      
             # 完成问题解决方案
+            # 问题错误且问题项下面<workflow_index>不为空则把知识点流程添加到当前流程后面再次讲解一遍
+            # 问题正确则进入下一流程
             
 
 def test():
@@ -164,4 +180,5 @@ def test():
     controler.run()
 
 if __name__ == '__main__':
+    DEBUG = True
     test()
