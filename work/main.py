@@ -5,6 +5,8 @@ from PIL import Image
 from PIL import ImageTk
 import os
 
+# pip install baidu-aip
+
 class VisualMain(Frame):
 # 可视化界面
 

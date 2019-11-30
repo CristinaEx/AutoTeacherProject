@@ -8,7 +8,7 @@ import ActionUtils.ppt_control as ppt_control
 import time
 from playsound import playsound
 
-DEBUG = False
+DEBUG = True
 
 class Controler:
 # 主流程控制程序
@@ -46,6 +46,7 @@ class Controler:
         while not len(self.work_stack) == 0:
             self.__runOne()
         print('Finish PPT')
+        self.keyboard.endPPT()
 
     def __delay(self,t):
         """
@@ -86,6 +87,14 @@ class Controler:
         for result in results:
             # 问题是否精确解
             if result['exact'] == '1':
+                if len(answers) == 0:
+                    if not result['workflow_index'] == '' and not result['workflow_index'] == None:
+                        for index in result['workflow_index'].split(','):
+                            add_workflow = self.stack_book[index]
+                            # 授予介入许可
+                            if add_workflow['visual'] == '0':
+                                self.extra_workflows.append(add_workflow['index'])
+                            self.work_stack.append(add_workflow)
                 # 精确解
                 for answer in answers:
                     # 问题回答错误
@@ -93,18 +102,27 @@ class Controler:
                         # 存在问题回答错误后的反馈
                         if DEBUG:
                             print('Wrong Answer:' + answer + ' ---> ' + result['txt'])
-                        if not result['workflow_index'] == '':
-                            add_workflow = self.stack_book[result['workflow_index']]
-                            # 授予介入许可
-                            if add_workflow['visual'] == '0':
-                                self.extra_workflows.append(add_workflow['index'])
-                            self.work_stack.append(add_workflow)
+                        if not result['workflow_index'] == '' and not result['workflow_index'] == None:
+                            for index in result['workflow_index'].split(','):
+                                add_workflow = self.stack_book[index]
+                                # 授予介入许可
+                                if add_workflow['visual'] == '0':
+                                    self.extra_workflows.append(add_workflow['index'])
+                                self.work_stack.append(add_workflow)
                     else:
                         # 问题回答正确
                         if DEBUG:
                             print('Correct Answer:' + answer)
             else:
                 # 非精确解
+                if len(answers) == 0:
+                    if not result['workflow_index'] == '' and not result['workflow_index'] == None:
+                        for index in result['workflow_index'].split(','):
+                            add_workflow = self.stack_book[index]
+                            # 授予介入许可
+                            if add_workflow['visual'] == '0':
+                                self.extra_workflows.append(add_workflow['index'])
+                            self.work_stack.append(add_workflow)
                 for answer in answers:
                     # 获取近义词
                     txts = [result['txt']] + self.similar_utils.getSimilarWord(result['txt'])
@@ -118,16 +136,18 @@ class Controler:
                         # 存在问题回答错误后的反馈
                         if DEBUG:
                             print('Wrong Answer:' + answer + ' ---> ' + str(txts))
-                        if not result['workflow_index'] == '':
-                            add_workflow = self.stack_book[result['workflow_index']]
-                            # 授予介入许可
-                            if add_workflow['visual'] == '0':
-                                self.extra_workflows.append(add_workflow['index'])
-                            self.work_stack.append(add_workflow)     
+                        if not result['workflow_index'] == '' and not result['workflow_index'] == None:
+                            for index in result['workflow_index'].split(','):
+                                add_workflow = self.stack_book[index]
+                                # 授予介入许可
+                                if add_workflow['visual'] == '0':
+                                    self.extra_workflows.append(add_workflow['index'])
+                                self.work_stack.append(add_workflow)   
                     else:
                         # 问题回答正确
                         if DEBUG:
-                            print('Correct Answer:' + answer + ' in ' + str(txts))    
+                            print('Correct Answer:' + answer + ' in ' + str(txts))   
+                             
 
     def __clickAnime(self,times):
         """
