@@ -1,9 +1,12 @@
 from WorkFlowUtils.workflow_reader import WorkFlowReader
 from SimilarWordUtils.similar_word_utils import SimilarWordUtils
+from VoiceUtils.voice_utils import VoiceUtils
+from path import *
 import ActionUtils.ppt_utils as ppt_utils
 import ActionUtils.ppt_keyboard as ppt_keyboard
 import ActionUtils.ppt_control as ppt_control
 import time
+from playsound import playsound
 
 DEBUG = False
 
@@ -25,6 +28,7 @@ class Controler:
         self.keyboard = ppt_keyboard.PPTKeyboard()# 键盘操作
         self.mouse = ppt_control.PPTMouse()# 鼠标操作
         self.similar_utils = SimilarWordUtils()
+        self.voice_utils = VoiceUtils()
 
     def reinit(self,PPT_pos,XML_pos):
         """
@@ -46,7 +50,7 @@ class Controler:
     def __delay(self,t):
         """
         延时t秒
-        t:int/float/...
+        t:int/float/...NP
         """
         time.sleep(t)
 
@@ -68,7 +72,62 @@ class Controler:
         播放str的语音
         """
         if DEBUG:
-            print(word)
+            print(word) 
+        self.voice_utils.word2voice(word = word)
+        self.voice_utils.playAudio()
+
+    def __dealAnswer(self,answers,results):
+        """
+        处理回答
+        answers:列表
+        results:列表
+        """
+        # 判断回答
+        for result in results:
+            # 问题是否精确解
+            if result['exact'] == '1':
+                # 精确解
+                for answer in answers:
+                    # 问题回答错误
+                    if answer.count(result['txt']) == 0:
+                        # 存在问题回答错误后的反馈
+                        if DEBUG:
+                            print('Wrong Answer:' + answer + ' ---> ' + result['txt'])
+                        if not result['workflow_index'] == '':
+                            add_workflow = self.stack_book[result['workflow_index']]
+                            # 授予介入许可
+                            if add_workflow['visual'] == '0':
+                                self.extra_workflows.append(add_workflow['index'])
+                            self.work_stack.append(add_workflow)
+                    else:
+                        # 问题回答正确
+                        if DEBUG:
+                            print('Correct Answer:' + answer)
+            else:
+                # 非精确解
+                for answer in answers:
+                    # 获取近义词
+                    txts = [result['txt']] + self.similar_utils.getSimilarWord(result['txt'])
+                    correct = False
+                    for txt in txts:
+                        if  answer.count(txt) > 0:
+                            correct = True
+                            break
+                    # 如果错误
+                    if not correct:
+                        # 存在问题回答错误后的反馈
+                        if DEBUG:
+                            print('Wrong Answer:' + answer + ' ---> ' + str(txts))
+                        if not result['workflow_index'] == '':
+                            add_workflow = self.stack_book[result['workflow_index']]
+                            # 授予介入许可
+                            if add_workflow['visual'] == '0':
+                                self.extra_workflows.append(add_workflow['index'])
+                            self.work_stack.append(add_workflow)     
+                    else:
+                        # 问题回答正确
+                        if DEBUG:
+                            print('Correct Answer:' + answer + ' in ' + str(txts))    
 
     def __clickAnime(self,times):
         """
@@ -80,14 +139,13 @@ class Controler:
                 self.mouse.playMovie()
             print('click ' + str(times) + ' times !')
 
-    def __receiveWord(self,seconds):
+    def __receiveAnswer(self,seconds,output_path = '.'):
         """
         seconds:接收语音允许的时间
+        output_path:输出路径
         接收语音
         """
-        if DEBUG:
-            self.__delay(seconds)
-            return '答案1'
+        self.voice_utils.record(seconds,output_path)
 
     def __runOne(self):
         """
@@ -113,64 +171,22 @@ class Controler:
             self.__delay(float(workflow['delay']))
         elif workflow['type'] == '2':
             # 问答类型
-            # 首先进入当前PPT位置
+            # 首先进入当前PPT位置N
             self.__goToPage(int(workflow['index_PPT']))
             # 动画效果点击
             self.__clickAnime(int(workflow['click']))
             # 叙述问题
             self.__playVoice(workflow['word'])
             # 等待
-            # 问答类型的delay项和问题等待合并
+            # 问答类型的delay项和问题等待合N并
             # self.__delay(float(workflow['delay']))
             # 接收回答
-            word = self.__receiveWord(float(workflow['delay']))
-            # 判断回答
-            for result in workflow['result']:
-                # 问题是否精确解
-                if result['exact'] == '1':
-                    # 精确解
-                    # 问题回答错误
-                    if not result['txt'] in word:
-                        # 存在问题回答错误后的反馈
-                        if DEBUG:
-                            print('Wrong Answer:' + word + ' ---> ' + result['txt'])
-                        if not result['workflow_index'] == '':
-                            add_workflow = self.stack_book[result['workflow_index']]
-                            # 授予介入许可
-                            if add_workflow['visual'] == '0':
-                                self.extra_workflows.append(add_workflow['index'])
-                            self.work_stack.append(add_workflow)
-                    else:
-                        # 问题回答正确
-                        if DEBUG:
-                            print('Correct Answer:' + word)
-                else:
-                    # 非精确解
-                    # 获取近义词
-                    txts = [result['txt']] + self.similar_utils.getSimilarWord(result['txt'])
-                    correct = False
-                    for txt in txts:
-                        if txt in word:
-                            correct = True
-                            break
-                    # 如果错误
-                    if not correct:
-                        # 存在问题回答错误后的反馈
-                        if DEBUG:
-                            print('Wrong Answer:' + word + ' ---> ' + str(txts))
-                        if not result['workflow_index'] == '':
-                            add_workflow = self.stack_book[result['workflow_index']]
-                            # 授予介入许可
-                            if add_workflow['visual'] == '0':
-                                self.extra_workflows.append(add_workflow['index'])
-                            self.work_stack.append(add_workflow)     
-                    else:
-                        # 问题回答正确
-                        if DEBUG:
-                            print('Correct Answer:' + word + ' in ' + str(txts))      
+            self.__receiveAnswer(float(workflow['delay']))
+            answer = self.voice_utils.voice2word()
             # 完成问题解决方案
             # 问题错误且问题项下面<workflow_index>不为空则把知识点流程添加到当前流程后面再次讲解一遍
             # 问题正确则进入下一流程
+            self.__dealAnswer(answer,workflow['result'])
             
 
 def test():
