@@ -46,3 +46,4 @@ if __name__ == '__main__':
     print(similar_tools.getSimilarWord("你"))
     print(similar_tools.getSimilarWord("他"))
     print(similar_tools.getSimilarWord("自行车"))
+    print(similar_tools.getSimilarWord("是的"))

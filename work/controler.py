@@ -77,6 +77,20 @@ class Controler:
         self.voice_utils.word2voice(word = word)
         self.voice_utils.playAudio()
 
+    def __addWorkflow(self,workflow_list):
+        """
+        workflow_list:流程列表
+        添加流程
+        反向压入栈
+        """
+        new_list = list(reversed(workflow_list))
+        for index in new_list:
+            add_workflow = self.stack_book[index]
+            # 授予介入许可
+            if add_workflow['visual'] == '0':
+                self.extra_workflows.append(add_workflow['index'])
+            self.work_stack.append(add_workflow)
+
     def __dealAnswer(self,answers,results):
         """
         处理回答
@@ -85,16 +99,14 @@ class Controler:
         """
         # 判断回答
         for result in results:
+            if len(answers) == 0:
+                if not result['workflow_index'] == '' and not result['workflow_index'] == None:
+                    self.__addWorkflow(result['workflow_index'].split(','))
+                    if DEBUG:
+                        print('未收到回答!')
+                    continue
             # 问题是否精确解
             if result['exact'] == '1':
-                if len(answers) == 0:
-                    if not result['workflow_index'] == '' and not result['workflow_index'] == None:
-                        for index in result['workflow_index'].split(','):
-                            add_workflow = self.stack_book[index]
-                            # 授予介入许可
-                            if add_workflow['visual'] == '0':
-                                self.extra_workflows.append(add_workflow['index'])
-                            self.work_stack.append(add_workflow)
                 # 精确解
                 for answer in answers:
                     # 问题回答错误
@@ -103,26 +115,13 @@ class Controler:
                         if DEBUG:
                             print('Wrong Answer:' + answer + ' ---> ' + result['txt'])
                         if not result['workflow_index'] == '' and not result['workflow_index'] == None:
-                            for index in result['workflow_index'].split(','):
-                                add_workflow = self.stack_book[index]
-                                # 授予介入许可
-                                if add_workflow['visual'] == '0':
-                                    self.extra_workflows.append(add_workflow['index'])
-                                self.work_stack.append(add_workflow)
+                            self.__addWorkflow(result['workflow_index'].split(','))
                     else:
                         # 问题回答正确
                         if DEBUG:
                             print('Correct Answer:' + answer)
             else:
                 # 非精确解
-                if len(answers) == 0:
-                    if not result['workflow_index'] == '' and not result['workflow_index'] == None:
-                        for index in result['workflow_index'].split(','):
-                            add_workflow = self.stack_book[index]
-                            # 授予介入许可
-                            if add_workflow['visual'] == '0':
-                                self.extra_workflows.append(add_workflow['index'])
-                            self.work_stack.append(add_workflow)
                 for answer in answers:
                     # 获取近义词
                     txts = [result['txt']] + self.similar_utils.getSimilarWord(result['txt'])
@@ -137,12 +136,7 @@ class Controler:
                         if DEBUG:
                             print('Wrong Answer:' + answer + ' ---> ' + str(txts))
                         if not result['workflow_index'] == '' and not result['workflow_index'] == None:
-                            for index in result['workflow_index'].split(','):
-                                add_workflow = self.stack_book[index]
-                                # 授予介入许可
-                                if add_workflow['visual'] == '0':
-                                    self.extra_workflows.append(add_workflow['index'])
-                                self.work_stack.append(add_workflow)   
+                            self.__addWorkflow(result['workflow_index'].split(','))
                     else:
                         # 问题回答正确
                         if DEBUG:
