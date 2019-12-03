@@ -3,9 +3,7 @@ import wave
 import os
 
 from playsound import playsound
-
-RECORD_START = 'mp3\\record_start.mp3'
-RECORD_END = 'mp3\\record_end.mp3'
+from path import *
 
 class Recorder:
 

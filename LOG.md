@@ -117,7 +117,6 @@ output:
 - - 语音模块!!!
 
 ### 2019/12/02 wwwaqqq
-
 - 结束动画放映调用的函数与开始动画放映的函数完全一致
 
 - TeachingPlan_GUI
@@ -128,3 +127,12 @@ output:
 - 按取消则会清除该流程所有信息，进行重填
 
 - 由于不太清楚要产生什么格式的输出，目前只是完成了将用户的输入转成一串不严谨格式的信息输出
+
+### 2019/12/03 CristinaEx
+
+- 各模块基本完成
+
+- 请运行main.exe，并反馈结果到LOG
+- - 链接：https://pan.baidu.com/s/1ezPJBoOlFxweFOZeUowauQ
+- - 提取码：h32j
+- - 使用方法:运行EXE->点击SELECT双击选择到PPT（注:目录下需有同名XML文件）->显示already open xxx.ppt->点击OPEN开始运行

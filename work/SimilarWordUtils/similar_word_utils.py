@@ -1,14 +1,12 @@
 # -*-coding:utf-8 -*-
-
+from path import *
 import os
 
 class SimilarWordUtils:
 
-    def __init__(self,data_path = "哈工大社会计算与信息检索研究中心同义词词林扩展版.txt"):
-        if not os.path.exists(data_path):
-            data_path = "SimilarWordUtils\\" + data_path
+    def __init__(self):
 
-        with open(data_path,'r') as f:
+        with open(SIMILAR_WORD_FILE,'r') as f:
             od = f.readlines()
 
         self.data = []

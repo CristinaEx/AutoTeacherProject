@@ -43,4 +43,5 @@ if __name__ == '__main__':
     voice2word = Voice2Word()
     result = voice2word.voice2word()
     for word in result:
-        voice2word.word2voice(word)
+        print(word)
+        # voice2word.word2voice(word)

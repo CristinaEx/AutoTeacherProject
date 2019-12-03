@@ -3,7 +3,9 @@ from my_dir_list import *
 from controler import *
 from PIL import Image
 from PIL import ImageTk
+from path import *
 import os
+import sys
 
 # pip install baidu-aip
 
@@ -27,9 +29,9 @@ class VisualMain(Frame):
         self.label_msg = Label(frame_top,textvariable = self.text)
         Button(frame_down, text='Select', command=self.__buttonSelectPath).grid(row=0, column=1) 
         Button(frame_down, text='Open', command=self.__buttonOpen).grid(row=0, column=2) 
-        Button(frame_down, text='Quit', command=self.__buttonExit).grid(row=0, column=3) 
+        Button(frame_down, text='Quit', command=sys.exit).grid(row=0, column=3) 
         # pic
-        pic_root = Image.open('GUIUtils\\pic\\pic_1.gif')
+        pic_root = Image.open(PIC_PATH)
         pic_root = ImageTk.PhotoImage(pic_root)
         pic_label = Label(frame_up, image = pic_root)
         pic_label.bm = pic_root
@@ -55,12 +57,9 @@ class VisualMain(Frame):
         try:
             self.control = Controler(self.PPT_pos,self.XML_pos)
         except:
-            return
+            print('OPEN ERROR!')
         else:
             self.control.run()
-
-    def __buttonExit(self):
-        exit(0)
 
 if __name__ == '__main__':
     test = VisualMain()
