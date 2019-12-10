@@ -173,24 +173,18 @@ class Controler:
                 return
             # 有介入许可
             self.extra_workflows.remove(workflow['index'])
+        # 首先进入当前PPT位置
+        self.__goToPage(int(workflow['index_PPT']))
+        # 动画效果点击
+        self.__clickAnime(int(workflow['click']))
+        # 播放语言或叙述问题
+        self.__playVoice(workflow['word'])
         if workflow['type'] == '1':
-            # 讲解类型
-            # 首先进入当前PPT位置
-            self.__goToPage(int(workflow['index_PPT']))
-            # 动画效果点击
-            self.__clickAnime(int(workflow['click']))
-            # 播放语言
-            self.__playVoice(workflow['word'])
+            # 讲解类型    
             # 等待
             self.__delay(float(workflow['delay']))
         elif workflow['type'] == '2':
             # 问答类型
-            # 首先进入当前PPT位置N
-            self.__goToPage(int(workflow['index_PPT']))
-            # 动画效果点击
-            self.__clickAnime(int(workflow['click']))
-            # 叙述问题
-            self.__playVoice(workflow['word'])
             # 等待
             # 问答类型的delay项和问题等待合N并
             # self.__delay(float(workflow['delay']))
